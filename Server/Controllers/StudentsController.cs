@@ -15,7 +15,7 @@ public class StudentsController : ControllerBase
             string fileContent = System.IO.File.ReadAllText($"{studentsAllocationPath}\\students.json");
             if (string.IsNullOrEmpty(fileContent)) return;
 
-            students = JsonSerializer.Deserialize<List<Student>>(fileContent);
+            students = JsonSerializer.Deserialize<List<Student>>(fileContent) ?? new List<Student>();
         }
     }
     ~StudentsController()
@@ -55,7 +55,6 @@ public class StudentsController : ControllerBase
     {
     }
 
-    // DELETE api/<StudentsController>/5
     [HttpDelete("{id}")]
     public void Delete(int id)
     {

@@ -21,7 +21,7 @@ public class LogsController : ControllerBase
             string fileContent = System.IO.File.ReadAllText($"{logsAllocationPath}\\errorLogs.json");
             if (string.IsNullOrEmpty(fileContent)) return;
 
-            errorLogs = JsonSerializer.Deserialize<List<Log>>(fileContent);
+            errorLogs = JsonSerializer.Deserialize<List<Log>>(fileContent) ?? new List<Log>();
         }
     }
     private void ReadWarningLogsFromFile()
@@ -31,7 +31,7 @@ public class LogsController : ControllerBase
             string fileContent = System.IO.File.ReadAllText($"{logsAllocationPath}\\warningLogs.json");
             if (string.IsNullOrEmpty(fileContent)) return;
 
-            warningLogs = JsonSerializer.Deserialize<List<Log>>(fileContent);
+            warningLogs = JsonSerializer.Deserialize<List<Log>>(fileContent) ?? new List<Log>();
         }
     }
     private void ReadInformationLogsFromFile()
@@ -41,7 +41,7 @@ public class LogsController : ControllerBase
             string fileContent = System.IO.File.ReadAllText($"{logsAllocationPath}\\informationLogs.json");
             if (string.IsNullOrEmpty(fileContent)) return;
 
-            informationLogs = JsonSerializer.Deserialize<List<Log>>(fileContent);
+            informationLogs = JsonSerializer.Deserialize<List<Log>>(fileContent) ?? new List<Log>();
         }
     }
     private void ReadCriticalLogsFromFile()
@@ -51,7 +51,7 @@ public class LogsController : ControllerBase
             string fileContent = System.IO.File.ReadAllText($"{logsAllocationPath}\\criticalLogs.json");
             if (string.IsNullOrEmpty(fileContent)) return;
 
-            criticalLogs = JsonSerializer.Deserialize<List<Log>>(fileContent);
+            criticalLogs = JsonSerializer.Deserialize<List<Log>>(fileContent) ?? new List<Log>();
         }
     }
     private void ReadDebugLogsFromFile()
@@ -61,7 +61,7 @@ public class LogsController : ControllerBase
             string fileContent = System.IO.File.ReadAllText($"{logsAllocationPath}\\debugLogs.json");
             if (string.IsNullOrEmpty(fileContent)) return;
 
-            debugLogs = JsonSerializer.Deserialize<List<Log>>(fileContent);
+            debugLogs = JsonSerializer.Deserialize<List<Log>>(fileContent) ?? new List<Log>();
         }
     }
     private void CheckLog()
