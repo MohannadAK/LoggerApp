@@ -162,13 +162,16 @@ public class LogsController : ControllerBase
     [HttpGet]
     public IEnumerable<Log> ReadAllLogs()
     {
-        IEnumerable<Log> allLogs = errorLogs
-            .Concat(warningLogs)
-            .Concat(informationLogs)
-            .Concat(criticalLogs)
-            .Concat(debugLogs);
+        return ReadAllLogFiles();
+    }
 
-        return allLogs;
+    private IEnumerable<Log> ReadAllLogFiles()
+    {
+        return errorLogs
+                    .Concat(warningLogs)
+                    .Concat(informationLogs)
+                    .Concat(criticalLogs)
+                    .Concat(debugLogs);
     }
 
     [HttpGet("{id}")]
