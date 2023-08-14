@@ -78,6 +78,7 @@ public class LogsController : ControllerBase
     {
         if (log is null) throw new ArgumentNullException(nameof(log));
 
+        log.Id = Guid.NewGuid();
         log.CreatedAt = DateTime.Now;
 
         if (string.IsNullOrEmpty(log.Message))
@@ -181,12 +182,127 @@ public class LogsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] Log value)
+    public IActionResult Put(Guid id, [FromBody] Log updatedLog)
     {
+        if (updatedLog == null)
+        {
+            return BadRequest("Log data is missing.");
+        }
+
+        bool updated = UpdateLog(id, updatedLog);
+        if (!updated)
+        {
+            return NotFound("Log not found.");
+        }
+
+        return Ok("Log updated successfully.");
+    }
+
+    private bool UpdateLog(Guid id, Log updatedLog)
+    {
+        bool updated = false;
+
+        if (TryUpdateLogFromList(errorLogs, id, updatedLog, out updated))
+        {
+            FlushErrorLogsToFile();
+        }
+        else if (TryUpdateLogFromList(warningLogs, id, updatedLog, out updated))
+        {
+            FlushWarningLogsToFile();
+        }
+        else if (TryUpdateLogFromList(informationLogs, id, updatedLog, out updated))
+        {
+            FlushInformationLogsToFile();
+        }
+        else if (TryUpdateLogFromList(criticalLogs, id, updatedLog, out updated))
+        {
+            FlushCriticalLogsToFile();
+        }
+        else if (TryUpdateLogFromList(debugLogs, id, updatedLog, out updated))
+        {
+            FlushDebugLogsToFile();
+        }
+
+        return updated;
+    }
+
+    private bool TryUpdateLogFromList(List<Log> logList, Guid id, Log updatedLog, out bool updated)
+    {
+        updated = false;
+
+        Log? logToUpdate = logList.FirstOrDefault(log => log.Id == id);
+
+        if (logToUpdate != null)
+        {
+            if (updatedLog.Type.HasValue)
+            {
+                logToUpdate.Type = updatedLog.Type.Value;
+            }
+            if (!string.IsNullOrEmpty(updatedLog.Message))
+            {
+                logToUpdate.Message = updatedLog.Message;
+            }
+            // Update other properties as needed.
+
+            updated = true;
+        }
+
+        return updated;
     }
 
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public IActionResult Delete(Guid id)
     {
+        bool deleted = DeleteLog(id);
+
+        if (!deleted)
+        {
+            return NotFound("Log not found.");
+        }
+
+        return Ok("Log deleted successfully.");
+    }
+
+    private bool DeleteLog(Guid id)
+    {
+        bool deleted = false;
+
+        if (TryDeleteLogFromList(errorLogs, id, out deleted))
+        {
+            FlushErrorLogsToFile();
+        }
+        else if (TryDeleteLogFromList(warningLogs, id, out deleted))
+        {
+            FlushWarningLogsToFile();
+        }
+        else if (TryDeleteLogFromList(informationLogs, id, out deleted))
+        {
+            FlushInformationLogsToFile();
+        }
+        else if (TryDeleteLogFromList(criticalLogs, id, out deleted))
+        {
+            FlushCriticalLogsToFile();
+        }
+        else if (TryDeleteLogFromList(debugLogs, id, out deleted))
+        {
+            FlushDebugLogsToFile();
+        }
+
+        return deleted;
+    }
+
+    private bool TryDeleteLogFromList(List<Log> logList, Guid id, out bool deleted)
+    {
+        deleted = false;
+
+        Log? logToDelete = logList.FirstOrDefault(log => log.Id == id);
+
+        if (logToDelete != null)
+        {
+            logList.Remove(logToDelete);
+            deleted = true;
+        }
+
+        return deleted;
     }
 }
