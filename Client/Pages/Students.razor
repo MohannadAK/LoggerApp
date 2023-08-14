@@ -4,21 +4,21 @@
 
 @inject HttpClient _httpClient
 
+
 <h3>Students</h3>
 
-
 <EditForm Model="student" OnSubmit="OnFormSubmit">
-	<div class="mb-2">
-		<InputText @bind-Value="student.Name" placeholder="Enter Name"></InputText>
-	</div>
-	<div class="mb-2">
-		<InputNumber @bind-Value="student.Age" placeholder="Enter Age"></InputNumber>
-	</div>
+    <div class="mb-2">
+        <InputText @bind-Value="student.Name" placeholder="Enter Name"></InputText>
+    </div>
+    <div class="mb-2">
+        <InputNumber @bind-Value="student.Age" placeholder="Enter Age"></InputNumber>
+    </div>
     <div class="mb-2">
         <InputText @bind-Value="student.Mobile" placeholder="Enter Mobile"></InputText>
     </div>
 
-	<button type="submit">Save</button>
+    <button type="submit">Save</button>
 </EditForm>
 
 <table class="table table-striped">
