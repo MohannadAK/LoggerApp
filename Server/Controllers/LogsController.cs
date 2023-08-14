@@ -7,11 +7,11 @@ namespace ThirdApp.Server;
 public class LogsController : ControllerBase
 {
     string logsAllocationPath = "App_Data\\Logs";
-    List<Log> errorLogs = new List<Log>();
-    List<Log> warningLogs = new List<Log>();
-    List<Log> informationLogs = new List<Log>();
-    List<Log> criticalLogs = new List<Log>();
-    List<Log> debugLogs = new List<Log>();
+    List<Log> errorLogs = new();
+    List<Log> warningLogs = new();
+    List<Log> informationLogs = new();
+    List<Log> criticalLogs = new();
+    List<Log> debugLogs = new();
 
     public LogsController() => CheckLog();
     private void ReadErrorLogsFromFile()
@@ -118,36 +118,32 @@ public class LogsController : ControllerBase
     }
     private void FlushErrorLogsToFile()
     {
-        DirectoryInfo? directoryInfo;
         if (!Directory.Exists(logsAllocationPath))
-            directoryInfo = Directory.CreateDirectory(logsAllocationPath);
+            _ = Directory.CreateDirectory(logsAllocationPath);
 
         System.IO.File.WriteAllText($"{logsAllocationPath}\\errorLogs.json", JsonSerializer.Serialize(errorLogs));
     }
 
     private void FlushWarningLogsToFile()
     {
-        DirectoryInfo? directoryInfo;
         if (!Directory.Exists(logsAllocationPath))
-            directoryInfo = Directory.CreateDirectory(logsAllocationPath);
+            _ = Directory.CreateDirectory(logsAllocationPath);
 
         System.IO.File.WriteAllText($"{logsAllocationPath}\\warningLogs.json", JsonSerializer.Serialize(warningLogs));
     }
 
     private void FlushInformationLogsToFile()
     {
-        DirectoryInfo? directoryInfo;
         if (!Directory.Exists(logsAllocationPath))
-            directoryInfo = Directory.CreateDirectory(logsAllocationPath);
+            _ = Directory.CreateDirectory(logsAllocationPath);
 
         System.IO.File.WriteAllText($"{logsAllocationPath}\\informationLogs.json", JsonSerializer.Serialize(informationLogs));
     }
 
     private void FlushCriticalLogsToFile()
     {
-        DirectoryInfo? directoryInfo;
         if (!Directory.Exists(logsAllocationPath))
-            directoryInfo = Directory.CreateDirectory(logsAllocationPath);
+            _ = Directory.CreateDirectory(logsAllocationPath);
 
         System.IO.File.WriteAllText($"{logsAllocationPath}\\criticalLogs.json", JsonSerializer.Serialize(criticalLogs));
     }
@@ -176,10 +172,7 @@ public class LogsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public string Get(int id)
-    {
-        return "value";
-    }
+    public string Get(int id) => "value";
 
     [HttpPut("{id}")]
     public IActionResult Put(Guid id, [FromBody] Log updatedLog)
@@ -200,9 +193,7 @@ public class LogsController : ControllerBase
 
     private bool UpdateLog(Guid id, Log updatedLog)
     {
-        bool updated = false;
-
-        if (TryUpdateLogFromList(errorLogs, id, updatedLog, out updated))
+        if (TryUpdateLogFromList(errorLogs, id, updatedLog, out bool updated))
         {
             FlushErrorLogsToFile();
         }
@@ -226,7 +217,7 @@ public class LogsController : ControllerBase
         return updated;
     }
 
-    private bool TryUpdateLogFromList(List<Log> logList, Guid id, Log updatedLog, out bool updated)
+    private static bool TryUpdateLogFromList(List<Log> logList, Guid id, Log updatedLog, out bool updated)
     {
         updated = false;
 
@@ -242,7 +233,6 @@ public class LogsController : ControllerBase
             {
                 logToUpdate.Message = updatedLog.Message;
             }
-            // Update other properties as needed.
 
             updated = true;
         }
@@ -265,9 +255,8 @@ public class LogsController : ControllerBase
 
     private bool DeleteLog(Guid id)
     {
-        bool deleted = false;
 
-        if (TryDeleteLogFromList(errorLogs, id, out deleted))
+        if (TryDeleteLogFromList(errorLogs, id, out bool deleted))
         {
             FlushErrorLogsToFile();
         }
@@ -291,7 +280,7 @@ public class LogsController : ControllerBase
         return deleted;
     }
 
-    private bool TryDeleteLogFromList(List<Log> logList, Guid id, out bool deleted)
+    private static bool TryDeleteLogFromList(List<Log> logList, Guid id, out bool deleted)
     {
         deleted = false;
 
