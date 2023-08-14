@@ -1,6 +1,4 @@
-﻿using static ThirdApp.Shared.Log;
-
-namespace ThirdApp.Server;
+﻿namespace ThirdApp.Server;
 
 [Route("api/[controller]")]
 [ApiController]
